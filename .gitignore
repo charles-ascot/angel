@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+target/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment and secrets — belt and braces
+.env*
+*.secret
+*.secret.*
+*.key
+*.key.*
+*.pem
+*.p12
+credentials.json
+service-account*.json
+
+# IDE
+.vscode/
+.idea/
+
+# Tauri build artefacts
+src-tauri/gen/

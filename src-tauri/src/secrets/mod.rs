@@ -7,6 +7,9 @@
 //! - `angel-gcp-key`: GCS service account JSON credentials
 //! - `angel-anthropic-key`: Anthropic API key
 
+/// Service account email for GCS access.
+pub const GCP_SERVICE_ACCOUNT: &str = "charlies-angel@chiops.iam.gserviceaccount.com";
+
 /// Keychain service name for GCP credentials.
 pub const KEYCHAIN_GCP_SERVICE: &str = "angel-gcp-key";
 

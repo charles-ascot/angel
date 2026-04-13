@@ -14,13 +14,13 @@
 //! from GCS at runtime.
 
 /// GCS bucket name.
-pub const GCS_BUCKET: &str = "angel";
+pub const GCS_BUCKET: &str = "charlies-angel";
 
 /// GCP project ID.
-pub const GCS_PROJECT: &str = "chimera";
+pub const GCS_PROJECT: &str = "CHIOPS";
 
 /// GCS region.
-pub const GCS_REGION: &str = "europe-west1";
+pub const GCS_REGION: &str = "eu";
 
 /// Local SQLite database path (relative to Application Support).
 pub const LOCAL_DB_NAME: &str = "angel.db";

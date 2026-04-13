@@ -2,8 +2,8 @@
 
 ## Manual Setup (Charles)
 
-- [ ] Create GCS bucket `angel` in project `chimera`, region `europe-west1`, Standard class, uniform access, public access prevention enforced
-- [ ] Create service account `angel@chimera.iam.gserviceaccount.com`, bind Storage Object Admin scoped to `angel` bucket only
+- [ ] Create GCS bucket `charlies-angel` in project `CHIOPS`, region `eu` (multi-region), Standard class, uniform access, public access prevention enforced
+- [ ] Create service account `angel@chimera.iam.gserviceaccount.com`, bind Storage Object Admin scoped to `charlies-angel` bucket only
 - [ ] Generate SA key JSON → store in macOS Keychain as `angel-gcp-key` (account: `angel@chimera.iam.gserviceaccount.com`, password: full JSON) → delete the file
 - [ ] Store Anthropic API key in macOS Keychain as `angel-anthropic-key` (account: `angel`, password: API key string)
 - [ ] Set git user config in repo (`git config user.name` / `user.email`)

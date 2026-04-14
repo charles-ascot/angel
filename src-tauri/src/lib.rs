@@ -6,6 +6,7 @@ mod secrets;
 mod state_model;
 mod storage;
 
+use capture::Capturer;
 use storage::{Database, GcsWriter};
 use tauri::Manager;
 
@@ -19,6 +20,7 @@ pub const CLAUDE_CODE_HISTORY_PATH: &str = "~/.claude/history.jsonl";
 pub struct AppState {
     pub db: Database,
     pub gcs: GcsWriter,
+    pub capturer: Capturer,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -51,7 +53,10 @@ pub fn run() {
                 }
             };
 
-            app.manage(AppState { db, gcs });
+            // Start all capture watchers.
+            let capturer = Capturer::start(db.clone());
+
+            app.manage(AppState { db, gcs, capturer });
             tracing::info!("Angel initialised");
             Ok(())
         })

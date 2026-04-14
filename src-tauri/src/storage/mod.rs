@@ -102,15 +102,16 @@ CREATE TABLE IF NOT EXISTS artefacts (
 
 -- Structured output from the Classify module.
 CREATE TABLE IF NOT EXISTS classified_artefacts (
-    id                TEXT PRIMARY KEY,
-    artefact_id       TEXT NOT NULL REFERENCES artefacts(id),
-    classified_at     TEXT NOT NULL,
-    stream_tag        TEXT,
-    related_component TEXT,
-    decisions         TEXT,    -- JSON array of strings
-    open_questions    TEXT,    -- JSON array of strings
-    status_changes    TEXT,    -- JSON array of strings
-    cross_references  TEXT     -- JSON array of artefact IDs
+    id                      TEXT PRIMARY KEY,
+    artefact_id             TEXT NOT NULL REFERENCES artefacts(id),
+    classified_at           TEXT NOT NULL,
+    stream_tag              TEXT,
+    related_component       TEXT,
+    decisions               TEXT,    -- JSON array of strings
+    open_questions          TEXT,    -- JSON array of strings
+    status_changes          TEXT,    -- JSON array of strings
+    cross_references        TEXT,    -- JSON array of artefact IDs
+    state_model_processed   INTEGER NOT NULL DEFAULT 0  -- 0 = pending, 1 = incorporated
 );
 
 -- State model: what is true right now across all watched sources.

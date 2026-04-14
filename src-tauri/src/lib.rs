@@ -8,6 +8,7 @@ mod storage;
 
 use capture::Capturer;
 use classify::Classifier;
+use state_model::StateModeler;
 use storage::{Database, GcsWriter};
 use tauri::Manager;
 
@@ -23,6 +24,7 @@ pub struct AppState {
     pub gcs: GcsWriter,
     pub capturer: Capturer,
     pub classifier: Classifier,
+    pub state_modeler: StateModeler,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -61,7 +63,10 @@ pub fn run() {
             // Start the classification background task.
             let classifier = Classifier::start(db.clone());
 
-            app.manage(AppState { db, gcs, capturer, classifier });
+            // Start the state model background task.
+            let state_modeler = StateModeler::start(db.clone());
+
+            app.manage(AppState { db, gcs, capturer, classifier, state_modeler });
             tracing::info!("Angel initialised");
             Ok(())
         })

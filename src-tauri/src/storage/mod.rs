@@ -171,7 +171,7 @@ impl GcsWriter {
     /// JSON (retrieved from the macOS Keychain).
     pub fn spawn(credentials_json: String) -> Self {
         let (tx, rx) = mpsc::unbounded_channel();
-        tokio::spawn(gcs_upload_loop(rx, credentials_json));
+        tauri::async_runtime::spawn(gcs_upload_loop(rx, credentials_json));
         Self(GcsWriterInner::Active(tx))
     }
 

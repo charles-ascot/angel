@@ -32,6 +32,13 @@ pub struct AppState {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // Capture the real panic message to /tmp/angel-panic.log before abort.
+    std::panic::set_hook(Box::new(|info| {
+        let msg = info.to_string();
+        eprintln!("ANGEL PANIC: {}", msg);
+        let _ = std::fs::write("/tmp/angel-panic.log", format!("{}\n", msg));
+    }));
+
     // try_init instead of init — Tauri/wry may set up the log global on some
     // macOS versions before this point; silently accept that rather than panic.
     let _ = tracing_subscriber::fmt::try_init();

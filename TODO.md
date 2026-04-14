@@ -4,8 +4,8 @@
 
 - [ ] Create GCS bucket `charlies-angel` in project `CHIOPS`, region `eu` (multi-region), Standard class, uniform access, public access prevention enforced
 - [ ] Bind `charlies-angel@chiops.iam.gserviceaccount.com` → Storage Object Admin scoped to `charlies-angel` bucket only (not project-wide)
-- [ ] Generate SA key JSON → store in macOS Keychain as `angel-gcp-key` (account: `charlies-angel@chiops.iam.gserviceaccount.com`, password: full JSON) → delete the file
-- [ ] Store Anthropic API key in macOS Keychain as `angel-anthropic-key` (account: `angel`, password: API key string)
+- [x] Generate SA key JSON → store in macOS Keychain as `angel-gcp-key` (account: `charlies-angel@chiops.iam.gserviceaccount.com`, password: full JSON) → delete the file
+- [x] Store Anthropic API key in macOS Keychain as `angel-anthropic-key` (account: `angel`, password: API key string)
 - [ ] Set git user config in repo (`git config user.name` / `user.email`)
 - [ ] Provision Apple Developer ID certificate (defer until first signed release)
 

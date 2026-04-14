@@ -1,6 +1,7 @@
 mod anthropic;
 mod capture;
 mod classify;
+mod commands;
 mod pushback;
 mod secrets;
 mod state_model;
@@ -75,6 +76,10 @@ pub fn run() {
             tracing::info!("Angel initialised");
             Ok(())
         })
+        .invoke_handler(tauri::generate_handler![
+            commands::list_work_items,
+            commands::list_pushback_log,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running Angel");
 }

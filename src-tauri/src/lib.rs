@@ -32,7 +32,9 @@ pub struct AppState {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tracing_subscriber::fmt::init();
+    // try_init instead of init — Tauri/wry may set up the log global on some
+    // macOS versions before this point; silently accept that rather than panic.
+    let _ = tracing_subscriber::fmt::try_init();
 
     tauri::Builder::default()
         .setup(|app| {

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Unique identifier for this launch agent -->
+    <key>Label</key>
+    <string>com.angel.app</string>
+
+    <!-- Path to the Angel binary inside the installed .app bundle -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Applications/Angel.app/Contents/MacOS/angel</string>
+    </array>
+
+    <!-- Start automatically when the user logs in -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart if Angel exits unexpectedly -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Minimum seconds between restarts (prevents tight crash loops) -->
+    <key>ThrottleInterval</key>
+    <integer>15</integer>
+
+    <!-- Log files — readable with: tail -f /tmp/angel.log -->
+    <key>StandardOutPath</key>
+    <string>/tmp/angel.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/angel.log</string>
+</dict>
+</plist>

@@ -45,7 +45,7 @@ pub struct Classifier;
 impl Classifier {
     /// Spawn the classification background task. Returns immediately.
     pub fn start(db: Database) -> Self {
-        tokio::spawn(async move {
+        tauri::async_runtime::spawn(async move {
             if let Err(e) = classify_loop(db).await {
                 error!("Classify: loop exited with error: {:#}", e);
             }

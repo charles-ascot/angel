@@ -43,7 +43,7 @@ pub struct StateModeler;
 impl StateModeler {
     /// Spawn the state model background task. Returns immediately.
     pub fn start(db: Database) -> Self {
-        tokio::spawn(async move {
+        tauri::async_runtime::spawn(async move {
             if let Err(e) = state_model_loop(db).await {
                 error!("StateModel: loop exited: {:#}", e);
             }

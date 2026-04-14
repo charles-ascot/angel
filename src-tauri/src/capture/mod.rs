@@ -54,13 +54,13 @@ impl Capturer {
             let source = source.to_string();
 
             if is_dir {
-                tokio::spawn(async move {
+                tauri::async_runtime::spawn(async move {
                     if let Err(e) = watch_dir(db, path, source).await {
                         error!("Capture dir-watcher exited: {:#}", e);
                     }
                 });
             } else {
-                tokio::spawn(async move {
+                tauri::async_runtime::spawn(async move {
                     if let Err(e) = watch_file(db, path, source).await {
                         error!("Capture file-watcher exited: {:#}", e);
                     }

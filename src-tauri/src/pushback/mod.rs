@@ -65,7 +65,7 @@ pub struct PushbackWatcher;
 impl PushbackWatcher {
     /// Spawn the pushback background task. Returns immediately.
     pub fn start(db: Database) -> Self {
-        tokio::spawn(async move {
+        tauri::async_runtime::spawn(async move {
             if let Err(e) = pushback_loop(db).await {
                 error!("Pushback: loop exited: {:#}", e);
             }
@@ -116,7 +116,7 @@ async fn pushback_loop(db: Database) -> Result<()> {
                         if is_jsonl(path) {
                             let db = db.clone();
                             let path = path.clone();
-                            tokio::spawn(async move {
+                            tauri::async_runtime::spawn(async move {
                                 // Brief pause so the writer flushes its first line.
                                 tokio::time::sleep(CREATION_DELAY).await;
                                 if let Err(e) = on_new_session(&db, &path).await {

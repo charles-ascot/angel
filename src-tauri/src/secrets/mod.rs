@@ -1,14 +1,17 @@
-//! Secrets module — macOS Keychain wrapper for credential access.
+//! Secrets module — reads credentials from the macOS Keychain via the
+//! `security` CLI tool.
 //!
-//! All secrets are stored in the macOS Keychain. No secrets are ever stored
-//! in environment variables, config files, or source code.
+//! Using `security` instead of the `keyring` crate because the `keyring`
+//! crate's macOS backend relies on the deprecated `SecKeychain` API which
+//! silently fails on macOS 15+. The `security` CLI uses the modern SecItem
+//! API and is always available on macOS.
 //!
-//! Keychain items:
-//! - `angel-gcp-key`: GCS service account JSON credentials
-//! - `angel-anthropic-key`: Anthropic API key
+//! Keychain items (stored with `security add-generic-password`):
+//! - service `angel-gcp-key`,       account `charlies-angel@chiops.iam.gserviceaccount.com`
+//! - service `angel-anthropic-key`, account `angel`
 
 use anyhow::{Context, Result};
-use keyring::Entry;
+use std::process::Command;
 
 /// Email of the GCP service account.
 pub const GCP_SERVICE_ACCOUNT: &str = "charlies-angel@chiops.iam.gserviceaccount.com";
@@ -27,30 +30,48 @@ pub const KEYCHAIN_ANTHROPIC_ACCOUNT: &str = "angel";
 /// Returns an error if the item is absent or empty — caller should log
 /// a warning and disable GCS archiving rather than crashing.
 pub fn get_gcp_credentials() -> Result<String> {
-    let entry = Entry::new(KEYCHAIN_GCP_SERVICE, GCP_SERVICE_ACCOUNT)
-        .context("failed to create keychain entry for GCP credentials")?;
-    let creds = entry
-        .get_password()
-        .context("GCP credentials not found in keychain — run setup first")?;
-    if creds.is_empty() {
-        anyhow::bail!("GCP credentials keychain item exists but is empty");
-    }
-    Ok(creds)
+    keychain_read(KEYCHAIN_GCP_SERVICE, GCP_SERVICE_ACCOUNT)
+        .context("GCP credentials not found in keychain — run setup first")
 }
 
 /// Retrieve the Anthropic API key from the macOS Keychain.
 ///
 /// Returns an error if the item is absent or empty.
 pub fn get_anthropic_key() -> Result<String> {
-    let entry = Entry::new(KEYCHAIN_ANTHROPIC_SERVICE, KEYCHAIN_ANTHROPIC_ACCOUNT)
-        .context("failed to create keychain entry for Anthropic API key")?;
-    let key = entry
-        .get_password()
-        .context("Anthropic API key not found in keychain — run setup first")?;
-    if key.is_empty() {
-        anyhow::bail!("Anthropic API key keychain item exists but is empty");
+    keychain_read(KEYCHAIN_ANTHROPIC_SERVICE, KEYCHAIN_ANTHROPIC_ACCOUNT)
+        .context("Anthropic API key not found in keychain — run setup first")
+}
+
+/// Read a generic password from the login keychain using the `security` CLI.
+///
+/// Equivalent to:
+///   `security find-generic-password -s SERVICE -a ACCOUNT -w`
+fn keychain_read(service: &str, account: &str) -> Result<String> {
+    let output = Command::new("security")
+        .args([
+            "find-generic-password",
+            "-s", service,
+            "-a", account,
+            "-w",
+        ])
+        .output()
+        .context("failed to invoke `security` CLI — is Xcode Command Line Tools installed?")?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        anyhow::bail!("No matching entry found in keychain. {}", stderr.trim());
     }
-    Ok(key)
+
+    let secret = String::from_utf8(output.stdout)
+        .context("keychain value is not valid UTF-8")?
+        .trim()
+        .to_string();
+
+    if secret.is_empty() {
+        anyhow::bail!("keychain item exists but is empty");
+    }
+
+    Ok(secret)
 }
 
 /// Initialise the Secrets module.
